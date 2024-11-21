@@ -24,11 +24,17 @@ namespace CSharpTest
                 }
             }
 
-            for(int workDaysCount = 0; workDaysCount < dayCount - 1; requiredDate = requiredDate.AddDays(1))
+            int workDaysCount = 0;
+            while (workDaysCount < dayCount)
             {
                 if (!weekEndDates.Contains(requiredDate))
                 {
                     workDaysCount++;
+                }
+
+                if(workDaysCount < dayCount)
+                {
+                    requiredDate = requiredDate.AddDays(1);
                 }
             }
 

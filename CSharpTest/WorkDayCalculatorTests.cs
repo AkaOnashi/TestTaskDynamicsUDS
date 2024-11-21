@@ -52,5 +52,91 @@ namespace CSharpTest
 
             Assert.IsTrue(result.Equals(new DateTime(2021, 4, 28)));
         }
+
+        [TestMethod]
+        public void TestWeekendsInPast()
+        {
+            DateTime startDate = new DateTime(2021, 5, 1);
+            int count = 3;
+            WeekEnd[] weekends = new WeekEnd[1]
+            {
+                new WeekEnd(new DateTime(2021, 4, 20), new DateTime(2021, 4, 22)) 
+            };
+
+            DateTime result = new WorkDayCalculator().Calculate(startDate, count, weekends);
+
+            Assert.AreEqual(new DateTime(2021, 5, 3), result);
+        }
+
+        [TestMethod]
+        public void TestWeekendsOverlappingNow()
+        {
+            DateTime startDate = new DateTime(2021, 5, 1);
+            int count = 3;
+            WeekEnd[] weekends = new WeekEnd[1]
+            {
+                new WeekEnd(new DateTime(2021, 4, 30), new DateTime(2021, 5, 2)) 
+            };
+
+            DateTime result = new WorkDayCalculator().Calculate(startDate, count, weekends);
+
+            Assert.AreEqual(new DateTime(2021, 5, 5), result);
+        }
+
+        [TestMethod]
+        public void TestWeekendsInFuture()
+        {
+            DateTime startDate = new DateTime(2021, 5, 1);
+            int count = 3;
+            WeekEnd[] weekends = new WeekEnd[1]
+            {
+                new WeekEnd(new DateTime(2021, 5, 3), new DateTime(2021, 5, 4)) 
+            };
+
+            DateTime result = new WorkDayCalculator().Calculate(startDate, count, weekends);
+
+            Assert.AreEqual(new DateTime(2021, 5, 5), result);
+        }
+
+        [TestMethod]
+        public void TestNoWorkDaysDueToContinuousWeekends()
+        {
+            DateTime startDate = new DateTime(2021, 5, 1);
+            int count = 3;
+            WeekEnd[] weekends = new WeekEnd[1]
+            {
+                new WeekEnd(new DateTime(2021, 5, 1), new DateTime(2021, 5, 10)) 
+            };
+
+            DateTime result = new WorkDayCalculator().Calculate(startDate, count, weekends);
+
+            Assert.AreEqual(new DateTime(2021, 5, 13), result); 
+        }
+
+        [TestMethod]
+        public void TestEmptyWeekends()
+        {
+            DateTime startDate = new DateTime(2021, 5, 1);
+            int count = 5;
+
+            DateTime result = new WorkDayCalculator().Calculate(startDate, count, new WeekEnd[0]);
+
+            Assert.AreEqual(startDate.AddDays(count - 1), result);
+        }
+
+        [TestMethod]
+        public void TestSingleDayWeekend()
+        {
+            DateTime startDate = new DateTime(2021, 5, 1);
+            int count = 3;
+            WeekEnd[] weekends = new WeekEnd[1]
+            {
+                new WeekEnd(new DateTime(2021, 5, 2), new DateTime(2021, 5, 2)) 
+            };
+
+            DateTime result = new WorkDayCalculator().Calculate(startDate, count, weekends);
+
+            Assert.AreEqual(new DateTime(2021, 5, 4), result);
+        }
     }
 }
